@@ -3,159 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AWS Cloud Computing Lab static site demonstrating AWS Amplify deployment workflow." />
-  <title>AWS Amplify Cloud Lab</title>
+  <meta name="description" content="Clean and modern Todo application built with HTML, CSS, and JavaScript." />
+  <title>TodoFlow</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="site-header" id="top">
-    <div class="container nav-wrap">
-      <a class="brand" href="#top" aria-label="AWS Cloud Computing Lab Home">☁ Cloud Lab</a>
-      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav">
-        <span></span><span></span><span></span>
-      </button>
-      <nav id="site-nav" class="site-nav" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#flow">Flow</a>
-        <a href="#cicd">CI/CD</a>
-        <a href="#services">Services</a>
-        <a href="#demo">Demo</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero section">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <span class="badge">AWS Cloud Computing Lab</span>
-          <h1>Build. Deploy. Scale.</h1>
-          <p>Exploring AWS Amplify for modern web application deployment.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#about">Explore AWS Amplify</a>
-            <a class="btn btn-secondary" href="#flow">View Architecture</a>
-          </div>
+  <main class="app-shell">
+    <section class="todo-app" aria-label="Todo application">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Productive Day</p>
+          <h1>TodoFlow</h1>
+          <p class="subtitle">Organize work, stay focused, and finish faster.</p>
         </div>
-        <div class="hero-visual" aria-hidden="true">
-          <svg viewBox="0 0 560 420" role="img" aria-label="Cloud deployment illustration">
-            <defs>
-              <linearGradient id="cloudGlow" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#7cc6ff" />
-                <stop offset="100%" stop-color="#6f74ff" />
-              </linearGradient>
-            </defs>
-            <rect x="96" y="60" width="368" height="280" rx="24" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" />
-            <g>
-              <circle cx="220" cy="180" r="42" fill="url(#cloudGlow)" />
-              <circle cx="272" cy="162" r="54" fill="url(#cloudGlow)" />
-              <circle cx="336" cy="185" r="38" fill="url(#cloudGlow)" />
-              <rect x="208" y="182" width="162" height="52" rx="26" fill="url(#cloudGlow)" />
-            </g>
-            <g class="pulse-line">
-              <path d="M280 256v58" stroke="#9ad7ff" stroke-width="4" stroke-linecap="round" />
-              <path d="M244 292l36 34 36-34" fill="none" stroke="#9ad7ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-            </g>
-          </svg>
+        <div class="task-count-card" aria-live="polite">
+          <span id="activeCount">0</span>
+          <small>tasks left</small>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <section id="about" class="section reveal">
-      <div class="container">
-        <h2>About AWS Amplify</h2>
-        <p class="section-lead">AWS Amplify helps developers quickly build and host full-stack or static web applications with GitHub integration, managed hosting, and automated deployments.</p>
-        <div class="card-grid feature-grid">
-          <article class="glass-card">
-            <h3>Easy Deployment</h3>
-            <p>Deploy static websites and modern apps without managing infrastructure manually.</p>
-          </article>
-          <article class="glass-card">
-            <h3>GitHub Integration</h3>
-            <p>Connect your repository and let Amplify track branches and pull requests seamlessly.</p>
-          </article>
-          <article class="glass-card">
-            <h3>CI/CD</h3>
-            <p>Every push can trigger a fresh build and rollout through an automated pipeline.</p>
-          </article>
-          <article class="glass-card">
-            <h3>Scalable Hosting</h3>
-            <p>Global delivery with fast performance and reliable hosting for growing workloads.</p>
-          </article>
+      <form id="todoForm" class="todo-form" autocomplete="off">
+        <label for="todoInput" class="sr-only">Add a task</label>
+        <input id="todoInput" type="text" maxlength="120" placeholder="What needs to be done today?" required />
+        <button type="submit">Add Task</button>
+      </form>
+
+      <section class="toolbar" aria-label="Task controls">
+        <div class="filters" role="tablist" aria-label="Filter tasks">
+          <button class="filter-btn active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-btn" type="button" data-filter="active" role="tab" aria-selected="false">Active</button>
+          <button class="filter-btn" type="button" data-filter="completed" role="tab" aria-selected="false">Completed</button>
         </div>
-      </div>
-    </section>
+        <button id="clearCompleted" class="clear-btn" type="button">Clear completed</button>
+      </section>
 
-    <section id="flow" class="section reveal">
-      <div class="container">
-        <h2>Deployment Flow</h2>
-        <div class="flow-wrap" role="list" aria-label="Amplify deployment workflow">
-          <div class="flow-item" role="listitem"><span>🔧</span><strong>GitHub</strong></div>
-          <div class="flow-arrow" aria-hidden="true">↓</div>
-          <div class="flow-item" role="listitem"><span>☁</span><strong>AWS Amplify</strong></div>
-          <div class="flow-arrow" aria-hidden="true">↓</div>
-          <div class="flow-item" role="listitem"><span>⚙</span><strong>Build &amp; Deploy</strong></div>
-          <div class="flow-arrow" aria-hidden="true">↓</div>
-          <div class="flow-item" role="listitem"><span>🌐</span><strong>Live Website</strong></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="cicd" class="section reveal">
-      <div class="container">
-        <h2>CI/CD Demonstration</h2>
-        <p class="section-lead"><strong>Push → Build → Deploy → Live</strong></p>
-        <p>When code is committed and pushed to the connected GitHub repository, AWS Amplify can automatically start a deployment pipeline and publish updated content with minimal effort.</p>
-      </div>
-    </section>
-
-    <section id="services" class="section reveal">
-      <div class="container">
-        <h2>AWS Services</h2>
-        <div class="card-grid">
-          <article class="glass-card">
-            <h3>AWS Amplify</h3>
-            <p>Hosts and deploys the web app with integrated build workflows.</p>
-          </article>
-          <article class="glass-card">
-            <h3>API Gateway</h3>
-            <p>Manages and exposes secure API endpoints for frontend communication.</p>
-          </article>
-          <article class="glass-card">
-            <h3>AWS Lambda</h3>
-            <p>Runs serverless functions to process backend logic on demand.</p>
-          </article>
-          <article class="glass-card">
-            <h3>Amazon S3</h3>
-            <p>Stores static assets and artifacts with durable object storage.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="demo" class="section reveal">
-      <div class="container">
-        <article class="demo-card glass-card">
-          <h2>Amplify Deployment Demo</h2>
-          <ul>
-            <li><span aria-hidden="true">✓</span> Static HTML website</li>
-            <li><span aria-hidden="true">✓</span> GitHub connected</li>
-            <li><span aria-hidden="true">✓</span> Automatic deployment</li>
-            <li><span aria-hidden="true">✓</span> Responsive design</li>
-          </ul>
-          <button class="btn btn-primary toast-trigger" type="button">Show Deployment Status</button>
-        </article>
-      </div>
+      <ul id="todoList" class="todo-list" aria-live="polite"></ul>
+      <p id="emptyState" class="empty-state">No tasks yet. Add your first task above.</p>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>AWS Cloud Computing Lab</p>
-      <p>Built for learning AWS Amplify</p>
-    </div>
-  </footer>
-
-  <div class="toast" role="status" aria-live="polite" aria-atomic="true">Deployment pipeline synced with GitHub.</div>
 
   <script src="script.js"></script>
 </body>
