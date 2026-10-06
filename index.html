@@ -39,6 +39,39 @@
 
       <ul id="todoList" class="todo-list" aria-live="polite"></ul>
       <p id="emptyState" class="empty-state">No tasks yet. Add your first task above.</p>
+
+      <section class="api-panel" aria-label="AWS API Gateway integration">
+        <h2>AWS API Gateway</h2>
+        <p class="api-note">Connect and test your GET and POST endpoints directly from this app.</p>
+
+        <div class="api-grid">
+          <div class="api-card">
+            <label for="apiGetUrl">GET endpoint</label>
+            <input
+              id="apiGetUrl"
+              type="url"
+              value="https://fftmn8zyq6.execute-api.us-east-1.amazonaws.com/prod/hello"
+              placeholder="https://example.execute-api.region.amazonaws.com/prod/hello"
+            />
+            <button id="apiGetButton" type="button">Call GET</button>
+          </div>
+
+          <div class="api-card">
+            <label for="apiPostUrl">POST endpoint</label>
+            <input
+              id="apiPostUrl"
+              type="url"
+              placeholder="https://example.execute-api.region.amazonaws.com/prod/your-post-route"
+            />
+            <label for="apiPostBody">POST body (JSON)</label>
+            <textarea id="apiPostBody" rows="4" placeholder='{"message":"Hello from TodoFlow"}'></textarea>
+            <button id="apiPostButton" type="button">Call POST</button>
+          </div>
+        </div>
+
+        <p id="apiStatus" class="api-status" aria-live="polite"></p>
+        <pre id="apiResponse" class="api-response">Response will appear here.</pre>
+      </section>
     </section>
   </main>
 
