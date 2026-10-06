@@ -1,48 +1,124 @@
-const navToggle = document.querySelector('.nav-toggle');
-const siteNav = document.querySelector('.site-nav');
-const navLinks = document.querySelectorAll('.site-nav a, .hero-actions a');
-const revealItems = document.querySelectorAll('.reveal');
-const toast = document.querySelector('.toast');
-const toastTrigger = document.querySelector('.toast-trigger');
+const STORAGE_KEY = 'todo-flow-items';
 
-if (navToggle && siteNav) {
-  navToggle.addEventListener('click', () => {
-    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-    navToggle.setAttribute('aria-expanded', String(!expanded));
-    siteNav.classList.toggle('open');
-  });
+const todoForm = document.getElementById('todoForm');
+const todoInput = document.getElementById('todoInput');
+const todoList = document.getElementById('todoList');
+const activeCount = document.getElementById('activeCount');
+const emptyState = document.getElementById('emptyState');
+const clearCompletedBtn = document.getElementById('clearCompleted');
+const filterButtons = document.querySelectorAll('.filter-btn');
+
+let currentFilter = 'all';
+let todos = readTodos();
+
+function readTodos() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
-navLinks.forEach((link) => {
-  link.addEventListener('click', () => {
-    if (siteNav && siteNav.classList.contains('open')) {
-      siteNav.classList.remove('open');
-      navToggle?.setAttribute('aria-expanded', 'false');
-    }
+function persistTodos() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
+
+function createTodoElement(todo) {
+  const item = document.createElement('li');
+  item.className = `todo-item${todo.completed ? ' completed' : ''}`;
+  item.dataset.id = todo.id;
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = todo.completed;
+  checkbox.setAttribute('aria-label', `Mark ${todo.text} as complete`);
+
+  const text = document.createElement('p');
+  text.textContent = todo.text;
+
+  const removeButton = document.createElement('button');
+  removeButton.className = 'delete-btn';
+  removeButton.type = 'button';
+  removeButton.setAttribute('aria-label', `Delete ${todo.text}`);
+  removeButton.textContent = '×';
+
+  checkbox.addEventListener('change', () => {
+    todos = todos.map((entry) =>
+      entry.id === todo.id ? { ...entry, completed: checkbox.checked } : entry
+    );
+    persistTodos();
+    renderTodos();
+  });
+
+  removeButton.addEventListener('click', () => {
+    todos = todos.filter((entry) => entry.id !== todo.id);
+    persistTodos();
+    renderTodos();
+  });
+
+  item.append(checkbox, text, removeButton);
+  return item;
+}
+
+function getFilteredTodos() {
+  if (currentFilter === 'active') {
+    return todos.filter((todo) => !todo.completed);
+  }
+  if (currentFilter === 'completed') {
+    return todos.filter((todo) => todo.completed);
+  }
+  return todos;
+}
+
+function renderTodos() {
+  const visibleTodos = getFilteredTodos();
+  todoList.innerHTML = '';
+
+  visibleTodos.forEach((todo) => {
+    todoList.appendChild(createTodoElement(todo));
+  });
+
+  const pending = todos.filter((todo) => !todo.completed).length;
+  activeCount.textContent = String(pending);
+  emptyState.style.display = visibleTodos.length === 0 ? 'block' : 'none';
+}
+
+todoForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const value = todoInput.value.trim();
+  if (!value) return;
+
+  todos.unshift({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    text: value,
+    completed: false,
+  });
+
+  todoInput.value = '';
+  persistTodos();
+  renderTodos();
+  todoInput.focus();
+});
+
+filterButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    currentFilter = button.dataset.filter || 'all';
+    filterButtons.forEach((btn) => {
+      const isActive = btn === button;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', String(isActive));
+    });
+    renderTodos();
   });
 });
 
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.2 }
-  );
+clearCompletedBtn.addEventListener('click', () => {
+  todos = todos.filter((todo) => !todo.completed);
+  persistTodos();
+  renderTodos();
+});
 
-  revealItems.forEach((item) => observer.observe(item));
-} else {
-  revealItems.forEach((item) => item.classList.add('visible'));
-}
-
-if (toast && toastTrigger) {
-  toastTrigger.addEventListener('click', () => {
-    toast.classList.add('show');
-    window.setTimeout(() => toast.classList.remove('show'), 2600);
-  });
-}
+renderTodos();
